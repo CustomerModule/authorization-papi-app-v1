@@ -1,0 +1,124 @@
+#%RAML 1.0
+title: Authorization Process API
+description: This RAML file describe structure of Authorization process API
+traits:
+  clientEnforcement: !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-traits/1.0.2/clientEnforcement-header-traits.raml
+  common: !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-traits/1.0.2/common-header-traits.raml
+  memberQueryParam: !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-traits/1.0.2/member-queryParams-traits.raml
+  
+types:
+  commonError : !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-datatypes/1.0.2/common/error-response-dataType.raml
+  getOTPResponse: !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-datatypes/1.0.2/Authorization/get-OTP-response-dataType.raml
+  postOTPRequest: !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-datatypes/1.0.2/Authorization/post-OTP-request-dataType.raml
+  postOTPResponse: !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-datatypes/1.0.2/Authorization/post-member-response-dataType.raml
+  postloginResponse: !include /exchange_modules/93850d6e-1f75-47fe-9f4d-9bda39836247/fragment-common-datatypes/1.0.2/Authorization/post-member-response-dataType.raml
+
+/members:
+  /login:
+    get:
+      description: This API will validate user is valid or not
+      is:
+        - clientEnforcement
+        - common
+      queryParameters:
+        userName:
+          required: true
+          type: string
+          example: "abc@gmail.com"
+        password:
+          required: true
+          type: string
+          example: "asdf"        
+      responses:
+        200:
+          body:
+            application/json:
+              type: postloginResponse
+              example: !include /example/get-login-200-response-example.json
+        400:
+            body:
+              application/json:
+                type: commonError
+                example: !include /example/error-400-response-example.json
+        401:
+          body:
+            application/json:
+              type: commonError
+              example: !include /example/error-401-response-example.json    
+        404:
+          body:
+            application/json:
+              type: commonError
+              example: !include /example/error-404-response-example.json
+        500:
+          body:
+            application/json:
+              type: commonError
+              example: !include /example/error-500-response-example.json
+
+  /{memberId}:
+    /OTP:
+      post:
+        description: This API is a process API which will generate the OTP to send to customer mobile.
+        is:
+          - clientEnforcement
+          - common
+        responses:
+          200:
+            body:
+              application/json:
+                type: postOTPResponse
+                example: !include /example/post-OTP-response-example.json
+          400:
+              body:
+                application/json:
+                  type: commonError
+                  example: !include /example/error-400-response-example.json
+          401:
+            body:
+              application/json:
+                type: commonError
+                example: !include /example/error-401-response-example.json    
+          404:
+            body:
+              application/json:
+                type: commonError
+                example: !include /example/error-404-response-example.json
+          500:
+            body:
+              application/json:
+                type: commonError
+                example: !include /example/error-500-response-example.json
+      /otpId:
+        get:
+          description: This API is a process API which will verify the OTP entered by customer.
+          is:
+            - clientEnforcement
+            - common
+          responses:
+            200:
+              body:
+                application/json:
+                  type: getOTPResponse
+                  example: !include /example/get-OTP-response-example.json 
+            400:
+              body:
+                application/json:
+                  type: commonError
+                  example: !include /example/error-400-response-example.json
+            401:
+              body:
+                application/json:
+                  type: commonError
+                  example: !include /example/error-401-response-example.json
+            404:
+              body:
+                application/json:
+                  type: commonError
+                  example: !include /example/error-404-response-example.json
+            500:
+              body:
+                application/json:
+                  type: commonError
+                  example: !include /example/error-500-response-example.json
+    
